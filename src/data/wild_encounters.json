@@ -83,64 +83,64 @@
             "encounter_rate": 40,
             "mons": [
               {
-                "min_level": 2,
-                "max_level": 10,
-                "species": "SPECIES_TRAPINCH"
-              },
-              {
-                "min_level": 2,
-                "max_level": 2,
-                "species": "SPECIES_TRAPINCH"
-              },
-              {
-                "min_level": 2,
-                "max_level": 2,
-                "species": "SPECIES_TRAPINCH"
+                "min_level": 3,
+                "max_level": 4,
+                "species": "SPECIES_SPRIGATITO"
               },
               {
                 "min_level": 3,
-                "max_level": 3,
-                "species": "SPECIES_TREECKO"
+                "max_level": 4,
+                "species": "SPECIES_FUECOCO"
               },
               {
                 "min_level": 3,
-                "max_level": 3,
-                "species": "SPECIES_MUDKIP"
+                "max_level": 4,
+                "species": "SPECIES_TINKATINK"
               },
               {
                 "min_level": 3,
-                "max_level": 3,
-                "species": "SPECIES_TORCHIC"
+                "max_level": 4,
+                "species": "SPECIES_ROOKIDEE"
               },
               {
                 "min_level": 3,
-                "max_level": 3,
-                "species": "SPECIES_WURMPLE"
+                "max_level": 4,
+                "species": "SPECIES_DREEPY"
               },
               {
                 "min_level": 3,
-                "max_level": 3,
-                "species": "SPECIES_POOCHYENA"
-              },
-              {
-                "min_level": 2,
-                "max_level": 2,
-                "species": "SPECIES_ZIGZAGOON"
-              },
-              {
-                "min_level": 2,
-                "max_level": 2,
-                "species": "SPECIES_ZIGZAGOON"
+                "max_level": 4,
+                "species": "SPECIES_MIMIKYU"
               },
               {
                 "min_level": 3,
-                "max_level": 3,
-                "species": "SPECIES_ZIGZAGOON"
+                "max_level": 4,
+                "species": "SPECIES_FROAKIE"
               },
               {
                 "min_level": 3,
-                "max_level": 3,
-                "species": "SPECIES_TREECKO"
+                "max_level": 4,
+                "species": "SPECIES_ZORUA"
+              },
+              {
+                "min_level": 3,
+                "max_level": 4,
+                "species": "SPECIES_RIOLU"
+              },
+              {
+                "min_level": 3,
+                "max_level": 4,
+                "species": "SPECIES_GIBLE"
+              },
+              {
+                "min_level": 3,
+                "max_level": 4,
+                "species": "SPECIES_PAWMI"
+              },
+              {
+                "min_level": 3,
+                "max_level": 4,
+                "species": "SPECIES_LECHONK"
               }
             ]
           }
