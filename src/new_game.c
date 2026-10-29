@@ -289,13 +289,6 @@ void NewGameInitData(void)
     AddBagItem(ITEM_MAX_REPEL, 99);
     AddBagItem(ITEM_MASTER_BALL, 99);
     AddBagItem(ITEM_RARE_CANDY, 99);
-
-    // Dev Pokemon: Lv 100 Rayquaza with Fly, Surf, Waterfall, Dive
-    ScriptGiveMon(SPECIES_RAYQUAZA, 100, ITEM_NONE);
-    SetMonMoveSlot(&gPlayerParty[0], MOVE_FLY, 0);
-    SetMonMoveSlot(&gPlayerParty[0], MOVE_SURF, 1);
-    SetMonMoveSlot(&gPlayerParty[0], MOVE_WATERFALL, 2);
-    SetMonMoveSlot(&gPlayerParty[0], MOVE_DIVE, 3);
 }
 
 static void ResetMiniGamesRecords(void)

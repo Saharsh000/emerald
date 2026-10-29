@@ -928,3 +928,255 @@ LittlerootTown_Text_BirchSomethingToShowYouAtLab:
 	.string "I have something to show you.\n"
 	.string "Let's go to my LAB.$"
 
+LittlerootTown_EventScript_ProfessorRayquaza::
+	lock
+	faceplayer
+	playmoncry SPECIES_RAYQUAZA, CRY_MODE_NORMAL
+	waitmoncry
+	goto_if_set FLAG_RECEIVED_STARTER_FROM_RAYQUAZA, LittlerootTown_EventScript_ProfessorRayquaza_AlreadyGotStarter
+	msgbox LittlerootTown_Text_RayquazaIntro, MSGBOX_DEFAULT
+LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory::
+	message LittlerootTown_Text_RayquazaChooseLineage
+	waitmessage
+	dynmultipush LittlerootTown_Text_CatElemental, 0
+	dynmultipush LittlerootTown_Text_CatDragons, 1
+	dynmultipush LittlerootTown_Text_CatElite, 2
+	dynmultistack 0, 0, FALSE, 3, FALSE, 0, DYN_MULTICHOICE_CB_NONE
+	switch VAR_RESULT
+	case 0, LittlerootTown_EventScript_ChooseElemental
+	case 1, LittlerootTown_EventScript_ChooseDragons
+	case 2, LittlerootTown_EventScript_ChooseElite
+	goto LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory
+
+LittlerootTown_EventScript_ChooseElemental::
+	message LittlerootTown_Text_ChoosePartner
+	waitmessage
+	dynmultipush LittlerootTown_Text_MonSprigatito, 0
+	dynmultipush LittlerootTown_Text_MonFuecoco, 1
+	dynmultipush LittlerootTown_Text_MonFroakie, 2
+	dynmultipush LittlerootTown_Text_Back, 3
+	dynmultistack 0, 0, FALSE, 4, FALSE, 0, DYN_MULTICHOICE_CB_NONE
+	switch VAR_RESULT
+	case 0, LittlerootTown_EventScript_PickSprigatito
+	case 1, LittlerootTown_EventScript_PickFuecoco
+	case 2, LittlerootTown_EventScript_PickFroakie
+	case 3, LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory
+	goto LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory
+
+LittlerootTown_EventScript_ChooseDragons::
+	message LittlerootTown_Text_ChoosePartner
+	waitmessage
+	dynmultipush LittlerootTown_Text_MonGible, 0
+	dynmultipush LittlerootTown_Text_MonBagon, 1
+	dynmultipush LittlerootTown_Text_MonJangmoo, 2
+	dynmultipush LittlerootTown_Text_Back, 3
+	dynmultistack 0, 0, FALSE, 4, FALSE, 0, DYN_MULTICHOICE_CB_NONE
+	switch VAR_RESULT
+	case 0, LittlerootTown_EventScript_PickGible
+	case 1, LittlerootTown_EventScript_PickBagon
+	case 2, LittlerootTown_EventScript_PickJangmoo
+	case 3, LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory
+	goto LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory
+
+LittlerootTown_EventScript_ChooseElite::
+	message LittlerootTown_Text_ChoosePartner
+	waitmessage
+	dynmultipush LittlerootTown_Text_MonTinkatink, 0
+	dynmultipush LittlerootTown_Text_MonRiolu, 1
+	dynmultipush LittlerootTown_Text_MonHisuianZorua, 2
+	dynmultipush LittlerootTown_Text_Back, 3
+	dynmultistack 0, 0, FALSE, 4, FALSE, 0, DYN_MULTICHOICE_CB_NONE
+	switch VAR_RESULT
+	case 0, LittlerootTown_EventScript_PickTinkatink
+	case 1, LittlerootTown_EventScript_PickRiolu
+	case 2, LittlerootTown_EventScript_PickHisuianZorua
+	case 3, LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory
+	goto LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory
+
+LittlerootTown_EventScript_PickSprigatito::
+	setvar VAR_0x8004, SPECIES_SPRIGATITO
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_PickFuecoco::
+	setvar VAR_0x8004, SPECIES_FUECOCO
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_PickFroakie::
+	setvar VAR_0x8004, SPECIES_FROAKIE
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_PickGible::
+	setvar VAR_0x8004, SPECIES_GIBLE
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_PickBagon::
+	setvar VAR_0x8004, SPECIES_BAGON
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_PickJangmoo::
+	setvar VAR_0x8004, SPECIES_JANGMO_O
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_PickTinkatink::
+	setvar VAR_0x8004, SPECIES_TINKATINK
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_PickRiolu::
+	setvar VAR_0x8004, SPECIES_RIOLU
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_PickHisuianZorua::
+	setvar VAR_0x8004, SPECIES_ZORUA_HISUI
+	goto LittlerootTown_EventScript_ConfirmStarter
+
+LittlerootTown_EventScript_ConfirmStarter::
+	showmonpic VAR_0x8004, 10, 3
+	playmoncry VAR_0x8004, CRY_MODE_NORMAL
+	bufferspeciesname STR_VAR_1, VAR_0x8004
+	msgbox LittlerootTown_Text_ConfirmPickStarter, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, LittlerootTown_EventScript_DeclineStarter
+	msgbox LittlerootTown_Text_WantShinyStarter, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, LittlerootTown_EventScript_SetShinyYes
+	setvar VAR_0x8005, 0
+	goto LittlerootTown_EventScript_GiveStarterFinal
+
+LittlerootTown_EventScript_SetShinyYes::
+	setvar VAR_0x8005, 1
+	goto LittlerootTown_EventScript_GiveStarterFinal
+
+LittlerootTown_EventScript_DeclineStarter::
+	hidemonpic
+	goto LittlerootTown_EventScript_ProfessorRayquaza_ChooseCategory
+
+LittlerootTown_EventScript_GiveStarterFinal::
+	callnative Script_GiveStarterMon
+	hidemonpic
+	playfanfare MUS_OBTAIN_ITEM
+	bufferspeciesname STR_VAR_1, VAR_0x8004
+	message LittlerootTown_Text_ReceivedStarter
+	waitmessage
+	waitfanfare
+	msgbox LittlerootTown_Text_AskNickname, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, LittlerootTown_EventScript_FinishStarter
+	call Common_EventScript_GetGiftMonPartySlot
+	call Common_EventScript_NameReceivedPartyMon
+LittlerootTown_EventScript_FinishStarter::
+	setflag FLAG_SYS_POKEMON_GET
+	setflag FLAG_RECEIVED_STARTER_FROM_RAYQUAZA
+	setvar VAR_BIRCH_LAB_STATE, 3
+	msgbox LittlerootTown_Text_RayquazaFarewell, MSGBOX_DEFAULT
+	release
+	end
+
+LittlerootTown_EventScript_ProfessorRayquaza_AlreadyGotStarter::
+	msgbox LittlerootTown_Text_RayquazaWatchingYou, MSGBOX_DEFAULT
+	msgbox LittlerootTown_Text_AskDevRayquaza, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, LittlerootTown_EventScript_RayquazaEnd
+	callnative Script_GiveDevRayquaza
+	goto_if_eq VAR_RESULT, FALSE, LittlerootTown_EventScript_PartyFull
+	playfanfare MUS_OBTAIN_ITEM
+	msgbox LittlerootTown_Text_ReceivedDevRayquaza, MSGBOX_DEFAULT
+	waitfanfare
+LittlerootTown_EventScript_RayquazaEnd::
+	release
+	end
+
+LittlerootTown_EventScript_PartyFull::
+	msgbox LittlerootTown_Text_PartyFull, MSGBOX_DEFAULT
+	release
+	end
+
+LittlerootTown_Text_RayquazaIntro:
+	.string "GWWAAARRRGH!!\p"
+	.string "Mortals know me as the SKY LORD...\n"
+	.string "but today, I am your PROFESSOR!\p"
+	.string "PROF. BIRCH was caught lacking on\n"
+	.string "ROUTE 101, so I have assumed total\l"
+	.string "jurisdiction over HOENN's starters.\p"
+	.string "Choose your lineage, warrior!$"
+
+LittlerootTown_Text_RayquazaChooseLineage:
+	.string "Select a lineage of power:$"
+
+LittlerootTown_Text_CatElemental:
+	.string "ELEMENTAL TRIO$"
+
+LittlerootTown_Text_CatDragons:
+	.string "DRAGON PSEUDOS$"
+
+LittlerootTown_Text_CatElite:
+	.string "THE ELITE THREE$"
+
+LittlerootTown_Text_ChoosePartner:
+	.string "Choose your destined partner:$"
+
+LittlerootTown_Text_MonSprigatito:
+	.string "SPRIGATITO (Grass)$"
+
+LittlerootTown_Text_MonFuecoco:
+	.string "FUECOCO (Fire)$"
+
+LittlerootTown_Text_MonFroakie:
+	.string "FROAKIE (Water)$"
+
+LittlerootTown_Text_MonGible:
+	.string "GIBLE (Dragon/Ground)$"
+
+LittlerootTown_Text_MonBagon:
+	.string "BAGON (Dragon/Flying)$"
+
+LittlerootTown_Text_MonJangmoo:
+	.string "JANGMO-O (Dragon/Fight)$"
+
+LittlerootTown_Text_MonTinkatink:
+	.string "TINKATINK (Fairy/Steel)$"
+
+LittlerootTown_Text_MonRiolu:
+	.string "RIOLU (Fighting/Steel)$"
+
+LittlerootTown_Text_MonHisuianZorua:
+	.string "HISUI ZORUA (Ghost/Norm)$"
+
+LittlerootTown_Text_Back:
+	.string "BACK$"
+
+LittlerootTown_Text_ConfirmPickStarter:
+	.string "Will you forge a bond with\n"
+	.string "{STR_VAR_1}?$"
+
+LittlerootTown_Text_WantShinyStarter:
+	.string "Do you desire this beast to radiate\n"
+	.string "a divine, SHINY aura?$"
+
+LittlerootTown_Text_ReceivedStarter:
+	.string "{PLAYER} received {STR_VAR_1}\n"
+	.string "from PROFESSOR RAYQUAZA!$"
+
+LittlerootTown_Text_AskNickname:
+	.string "Do you want to give a nickname to\n"
+	.string "{STR_VAR_1}?$"
+
+LittlerootTown_Text_RayquazaFarewell:
+	.string "A glorious choice!\p"
+	.string "Go forth, conquer the GYM LEADERS,\n"
+	.string "and show HOENN the true power of\l"
+	.string "the heavens!$"
+
+LittlerootTown_Text_RayquazaWatchingYou:
+	.string "GWWAAARRRGH!\p"
+	.string "I am monitoring your journey from\n"
+	.string "the ozone layer. L + Ratio to any\l"
+	.string "trainer who stands in your path.$"
+
+LittlerootTown_Text_AskDevRayquaza:
+	.string "Do you require my divine aerial avatar\n"
+	.string "(Dev Rayquaza with Fly & Surf)?$"
+
+LittlerootTown_Text_ReceivedDevRayquaza:
+	.string "{PLAYER} received a DEV RAYQUAZA\n"
+	.string "for aerial transport!$"
+
+LittlerootTown_Text_PartyFull:
+	.string "Your party is full, mortal! Make room\n"
+	.string "in your party first.$"
+

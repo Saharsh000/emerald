@@ -269,10 +269,7 @@ LittlerootTown_ProfessorBirchsLab_Movement_PlayerEnterLabForJohtoStarter:
 LittlerootTown_ProfessorBirchsLab_EventScript_Aide::
 	lock
 	faceplayer
-	goto_if_ge VAR_BIRCH_LAB_STATE, 3, LittlerootTown_ProfessorBirchsLab_EventScript_AideReceivedStarter
-	goto_if_set FLAG_BIRCH_AIDE_MET, LittlerootTown_ProfessorBirchsLab_EventScript_AideAlreadyMet
-	msgbox LittlerootTown_ProfessorBirchsLab_Text_BirchAwayOnFieldwork, MSGBOX_DEFAULT
-	setflag FLAG_BIRCH_AIDE_MET
+	msgbox LittlerootTown_ProfessorBirchsLab_Text_AideShocked, MSGBOX_DEFAULT
 	release
 	end
 
@@ -463,11 +460,8 @@ LittlerootTown_ProfessorBirchsLab_EventScript_ReceivedJohtoStarter::
 LittlerootTown_ProfessorBirchsLab_EventScript_Birch::
 	lock
 	faceplayer
-	goto_if_eq VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 5, LittlerootTown_ProfessorBirchsLab_EventScript_CanHaveAnyOneOfRarePokemon
-	goto_if_eq VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 2, LittlerootTown_ProfessorBirchsLab_EventScript_GrassyPatchWaiting
-	goto_if_unset FLAG_HAS_MATCH_CALL, LittlerootTown_ProfessorBirchsLab_EventScript_TryRatePokedexOrRegister
-	goto_if_unset FLAG_ENABLE_PROF_BIRCH_MATCH_CALL, EventScript_RegisterProfBirch
-	goto LittlerootTown_ProfessorBirchsLab_EventScript_TryRatePokedexOrRegister
+	msgbox LittlerootTown_ProfessorBirchsLab_Text_BirchDepressedAboutRayquaza, MSGBOX_DEFAULT
+	release
 	end
 
 LittlerootTown_ProfessorBirchsLab_EventScript_CanHaveAnyOneOfRarePokemon::
@@ -992,3 +986,22 @@ LittlerootTown_ProfessorBirchsLab_Text_ScottAboardSSTidalCall:
 	.string "we meet. I'll be waiting!\p"
 	.string "… … … … … …\n"
 	.string "… … … … … Click!$"
+
+LittlerootTown_ProfessorBirchsLab_Text_BirchDepressedAboutRayquaza:
+	.string "PROF. BIRCH: ...Oh, it's you, {PLAYER}...\p"
+	.string "Did you see that enormous green dragon\n"
+	.string "loitering outside?!\p"
+	.string "It descended from the ozone layer,\n"
+	.string "handed me an eviction notice, and took\l"
+	.string "all my starter POKéMON!\p"
+	.string "It literally told me 'L + Ratio + Sky Diff'\n"
+	.string "and started handing out FUECOCOS and\l"
+	.string "GIBLES to kids in the street...\p"
+	.string "What am I even supposed to research now?!\n"
+	.string "I might as well start a podcast...$"
+
+LittlerootTown_ProfessorBirchsLab_Text_AideShocked:
+	.string "The PROFESSOR hasn't stopped crying\n"
+	.string "since RAYQUAZA took his tenure...\p"
+	.string "I think RAYQUAZA is the department\n"
+	.string "head now.$"

@@ -543,3 +543,38 @@ void Script_GiveRandomBerry(struct ScriptContext *ctx)
 
     gSpecialVar_Result = BerryTypeToItemId(RandomUniform(RNG_RANDOM_BERRY, loBerry, hiBerry));
 }
+
+void Script_GiveStarterMon(void)
+{
+    struct PokemonTemplate monTemplate = {0};
+    monTemplate.species = gSpecialVar_0x8004;
+    monTemplate.level = 5;
+    monTemplate.ball = ITEM_POKE_BALL;
+    monTemplate.doNotUseDefaultBall = TRUE;
+    monTemplate.nature = NATURE_RANDOM;
+    monTemplate.gender = MON_GENDER_RANDOM;
+    if (gSpecialVar_0x8005 == 1)
+    {
+        monTemplate.isShiny = TRUE;
+        monTemplate.doNotUseDefaultShinyness = TRUE;
+    }
+    gSpecialVar_Result = ScriptGiveMonParameterized(B_SIDE_PLAYER, PARTY_SIZE, &monTemplate);
+}
+
+void Script_GiveDevRayquaza(void)
+{
+    u8 slot = CalculatePlayerPartyCount();
+    if (slot < PARTY_SIZE)
+    {
+        ScriptGiveMon(SPECIES_RAYQUAZA, 100, ITEM_NONE);
+        SetMonMoveSlot(&gPlayerParty[slot], MOVE_FLY, 0);
+        SetMonMoveSlot(&gPlayerParty[slot], MOVE_SURF, 1);
+        SetMonMoveSlot(&gPlayerParty[slot], MOVE_WATERFALL, 2);
+        SetMonMoveSlot(&gPlayerParty[slot], MOVE_DIVE, 3);
+        gSpecialVar_Result = TRUE;
+    }
+    else
+    {
+        gSpecialVar_Result = FALSE;
+    }
+}
