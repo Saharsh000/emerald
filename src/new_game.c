@@ -272,13 +272,20 @@ void NewGameInitData(void)
     FlagSet(FLAG_VISITED_SOOTOPOLIS_CITY);
     FlagSet(FLAG_VISITED_EVER_GRANDE_CITY);
 
-    // Story progress bypass: start outside, no truck sequence or blockers
-    VarSet(VAR_LITTLEROOT_TOWN_STATE, 4);
+    // Story progress: start outside Littleroot, no Birch rescue scene on Route 101
+    VarSet(VAR_LITTLEROOT_TOWN_STATE, 0); // Stops player at exit until talking to Rayquaza
     VarSet(VAR_LITTLEROOT_INTRO_STATE, 8);
-    VarSet(VAR_ROUTE101_STATE, 3);
+    VarSet(VAR_ROUTE101_STATE, 3);        // Completely bypasses Route 101 Birch/Zigzagoon event
     VarSet(VAR_OLDALE_TOWN_STATE, 1);
+    VarSet(VAR_BIRCH_STATE, 0);           // Birch stays in his lab
+    VarSet(VAR_BIRCH_LAB_STATE, 3);
     FlagSet(FLAG_RESCUED_BIRCH);
     FlagSet(FLAG_ADVENTURE_STARTED);
+    FlagSet(FLAG_HIDE_ROUTE_101_BIRCH);
+    FlagSet(FLAG_HIDE_ROUTE_101_BIRCH_STARTERS_BAG);
+    FlagSet(FLAG_HIDE_ROUTE_101_ZIGZAGOON);
+    FlagClear(FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_BIRCH);
+    FlagClear(FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_UNKNOWN_0x380);
     FlagSet(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK);
     FlagSet(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK);
 

@@ -884,8 +884,10 @@ LittlerootTown_Text_IfYouGoInGrassPokemonWillJumpOut:
 	.string "wild POKéMON will jump out!$"
 
 LittlerootTown_Text_DangerousIfYouDontHavePokemon:
-	.string "It's dangerous if you don't have\n"
-	.string "your own POKéMON.$"
+	.string "It's dangerous to enter the grass with\n"
+	.string "empty hands!\p"
+	.string "Go talk to PROFESSOR RAYQUAZA in town\n"
+	.string "and claim your starter POKéMON first!$"
 
 LittlerootTown_Text_CanYouGoSeeWhatsHappening:
 	.string "Um, hi!\p"
@@ -995,38 +997,47 @@ LittlerootTown_EventScript_ChooseElite::
 
 LittlerootTown_EventScript_PickSprigatito::
 	setvar VAR_0x8004, SPECIES_SPRIGATITO
+	setvar VAR_STARTER_MON, 0
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_PickFuecoco::
 	setvar VAR_0x8004, SPECIES_FUECOCO
+	setvar VAR_STARTER_MON, 1
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_PickFroakie::
 	setvar VAR_0x8004, SPECIES_FROAKIE
+	setvar VAR_STARTER_MON, 2
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_PickGible::
 	setvar VAR_0x8004, SPECIES_GIBLE
+	setvar VAR_STARTER_MON, 0
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_PickBagon::
 	setvar VAR_0x8004, SPECIES_BAGON
+	setvar VAR_STARTER_MON, 1
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_PickJangmoo::
 	setvar VAR_0x8004, SPECIES_JANGMO_O
+	setvar VAR_STARTER_MON, 2
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_PickTinkatink::
 	setvar VAR_0x8004, SPECIES_TINKATINK
+	setvar VAR_STARTER_MON, 0
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_PickRiolu::
 	setvar VAR_0x8004, SPECIES_RIOLU
+	setvar VAR_STARTER_MON, 1
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_PickHisuianZorua::
 	setvar VAR_0x8004, SPECIES_ZORUA_HISUI
+	setvar VAR_STARTER_MON, 2
 	goto LittlerootTown_EventScript_ConfirmStarter
 
 LittlerootTown_EventScript_ConfirmStarter::
@@ -1063,6 +1074,7 @@ LittlerootTown_EventScript_GiveStarterFinal::
 LittlerootTown_EventScript_FinishStarter::
 	setflag FLAG_SYS_POKEMON_GET
 	setflag FLAG_RECEIVED_STARTER_FROM_RAYQUAZA
+	setvar VAR_LITTLEROOT_TOWN_STATE, 4
 	setvar VAR_BIRCH_LAB_STATE, 3
 	msgbox LittlerootTown_Text_RayquazaFarewell, MSGBOX_DEFAULT
 	release
