@@ -55,6 +55,8 @@ void InitTrainerHillMap(void);
 void InitBattlePyramidMap(bool8 setPlayerPosition);
 void CopyMapTilesetsToVram(struct MapLayout const *mapLayout);
 void LoadMapTilesetPalettes(struct MapLayout const *mapLayout);
+void ApplyLocationGrassColor(struct MapLayout const *mapLayout);
+void ApplyLocationGrassColorToSprites(u8 paletteSlot);
 void LoadSecondaryTilesetPalette(struct MapLayout const *mapLayout, bool8 skipFaded);
 void CopySecondaryTilesetToVramUsingHeap(struct MapLayout const *mapLayout);
 void CopyPrimaryTilesetToVram(struct MapLayout const *mapLayout);

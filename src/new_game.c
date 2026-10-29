@@ -52,6 +52,8 @@
 #include "constants/items.h"
 #include "difficulty.h"
 #include "follower_npc.h"
+#include "constants/moves.h"
+#include "script_pokemon_util.h"
 
 extern const u8 EventScript_ResetAllMapFlags[];
 extern const u8 EventScript_ResetAllMapFlagsFrlg[];
@@ -135,10 +137,7 @@ static void ClearFrontierRecord(void)
 
 static void WarpToTruck(void)
 {
-    if (IS_FRLG)
-        SetWarpDestination(MAP_GROUP(MAP_PALLET_TOWN_PLAYERS_HOUSE_2F), MAP_NUM(MAP_PALLET_TOWN_PLAYERS_HOUSE_2F), WARP_ID_NONE, 6, 6);
-    else
-        SetWarpDestination(MAP_GROUP(MAP_INSIDE_OF_TRUCK), MAP_NUM(MAP_INSIDE_OF_TRUCK), WARP_ID_NONE, -1, -1);
+    SetWarpDestination(MAP_GROUP(MAP_LITTLEROOT_TOWN), MAP_NUM(MAP_LITTLEROOT_TOWN), WARP_ID_NONE, 5, 9);
     WarpIntoMap();
 }
 
@@ -234,6 +233,69 @@ void NewGameInitData(void)
     ResetItemFlags();
     ResetDexNav();
     ClearFollowerNPCData();
+
+    // ====================================================================
+    // DEV TESTING PROFILE (Fast Map Testing)
+    // ====================================================================
+    FlagSet(FLAG_SYS_POKEMON_GET);
+    FlagSet(FLAG_SYS_POKEDEX_GET);
+    FlagSet(FLAG_SYS_POKENAV_GET);
+    FlagSet(FLAG_SYS_B_DASH);
+    FlagSet(FLAG_RECEIVED_RUNNING_SHOES);
+    FlagSet(FLAG_SYS_NATIONAL_DEX);
+
+    // All 8 Badges (allows Fly, Surf, Waterfall, Dive outside battle)
+    FlagSet(FLAG_BADGE01_GET);
+    FlagSet(FLAG_BADGE02_GET);
+    FlagSet(FLAG_BADGE03_GET);
+    FlagSet(FLAG_BADGE04_GET);
+    FlagSet(FLAG_BADGE05_GET);
+    FlagSet(FLAG_BADGE06_GET); // Feather Badge for Fly
+    FlagSet(FLAG_BADGE07_GET);
+    FlagSet(FLAG_BADGE08_GET);
+
+    // All Fly locations unlocked on Region Map
+    FlagSet(FLAG_VISITED_LITTLEROOT_TOWN);
+    FlagSet(FLAG_VISITED_OLDALE_TOWN);
+    FlagSet(FLAG_VISITED_DEWFORD_TOWN);
+    FlagSet(FLAG_VISITED_LAVARIDGE_TOWN);
+    FlagSet(FLAG_VISITED_FALLARBOR_TOWN);
+    FlagSet(FLAG_VISITED_VERDANTURF_TOWN);
+    FlagSet(FLAG_VISITED_PACIFIDLOG_TOWN);
+    FlagSet(FLAG_VISITED_PETALBURG_CITY);
+    FlagSet(FLAG_VISITED_SLATEPORT_CITY);
+    FlagSet(FLAG_VISITED_MAUVILLE_CITY);
+    FlagSet(FLAG_VISITED_RUSTBORO_CITY);
+    FlagSet(FLAG_VISITED_FORTREE_CITY);
+    FlagSet(FLAG_VISITED_LILYCOVE_CITY);
+    FlagSet(FLAG_VISITED_MOSSDEEP_CITY);
+    FlagSet(FLAG_VISITED_SOOTOPOLIS_CITY);
+    FlagSet(FLAG_VISITED_EVER_GRANDE_CITY);
+
+    // Story progress bypass: start outside, no truck sequence or blockers
+    VarSet(VAR_LITTLEROOT_TOWN_STATE, 4);
+    VarSet(VAR_LITTLEROOT_INTRO_STATE, 8);
+    VarSet(VAR_ROUTE101_STATE, 3);
+    VarSet(VAR_OLDALE_TOWN_STATE, 1);
+    FlagSet(FLAG_RESCUED_BIRCH);
+    FlagSet(FLAG_ADVENTURE_STARTED);
+    FlagSet(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK);
+    FlagSet(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK);
+
+    // Testing Items & Money
+    SetMoney(&gSaveBlock1Ptr->money, 999999);
+    AddBagItem(ITEM_MACH_BIKE, 1);
+    AddBagItem(ITEM_ACRO_BIKE, 1);
+    AddBagItem(ITEM_MAX_REPEL, 99);
+    AddBagItem(ITEM_MASTER_BALL, 99);
+    AddBagItem(ITEM_RARE_CANDY, 99);
+
+    // Dev Pokemon: Lv 100 Rayquaza with Fly, Surf, Waterfall, Dive
+    ScriptGiveMon(SPECIES_RAYQUAZA, 100, ITEM_NONE);
+    SetMonMoveSlot(&gPlayerParty[0], MOVE_FLY, 0);
+    SetMonMoveSlot(&gPlayerParty[0], MOVE_SURF, 1);
+    SetMonMoveSlot(&gPlayerParty[0], MOVE_WATERFALL, 2);
+    SetMonMoveSlot(&gPlayerParty[0], MOVE_DIVE, 3);
 }
 
 static void ResetMiniGamesRecords(void)

@@ -871,6 +871,8 @@ void FieldEffectScript_LoadFadedPalette(u8 **script)
 {
     struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
     u32 paletteSlot = LoadSpritePalette(palette);
+    if (palette->tag == FLDEFF_PAL_TAG_GENERAL_1)
+        ApplyLocationGrassColorToSprites(paletteSlot);
     (*script) += 4;
     SetPaletteColorMapType(paletteSlot + 16, T1_READ_8(*script));
     (*script)++;

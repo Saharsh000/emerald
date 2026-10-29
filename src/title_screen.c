@@ -620,8 +620,8 @@ void CB2_InitTitleScreen(void)
     {
         u8 taskId = CreateTask(Task_TitleScreenPhase1, 0);
 
-        gTasks[taskId].tCounter = 256;
-        gTasks[taskId].tSkipToNext = FALSE;
+        gTasks[taskId].tCounter = 0;
+        gTasks[taskId].tSkipToNext = TRUE;
         gTasks[taskId].tPointless = -16;
         gTasks[taskId].tBg2Y = -32;
         gMain.state = 3;

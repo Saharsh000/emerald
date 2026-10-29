@@ -654,6 +654,11 @@
 		.endif
 	.endm
 
+	.macro applywaitmovement localId:req, movements:req, map
+	applymovement \localId, \movements, \map
+	waitmovement
+	.endm
+
 	@ Blocks script execution until the movements being applied to the specified (localId) object finish.
 	@ If localId is LOCALID_NONE (0), then the id of the last-moved object will be used instead.
 	@ If the specified object is not currently being manipulated with applymovement, then this command does nothing.

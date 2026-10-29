@@ -1021,14 +1021,7 @@ static void VBlankCB_Intro(void)
 
 void MainCB2_Intro(void)
 {
-    RunTasks();
-    AnimateSprites();
-    BuildOamBuffer();
-    UpdatePaletteFade();
-    if (gMain.newKeys != 0 && !gPaletteFade.active)
-        SetMainCallback2(MainCB2_EndIntro);
-    else if (gIntroFrameCounter != -1)
-        gIntroFrameCounter++;
+    SetMainCallback2(CB2_InitTitleScreen);
 }
 
 static void MainCB2_EndIntro(void)
@@ -1138,22 +1131,20 @@ static u8 SetUpCopyrightScreen(void)
 
 void CB2_InitCopyrightScreenAfterBootup(void)
 {
-    if (!SetUpCopyrightScreen())
-    {
-        SetSaveBlocksPointers(GetSaveBlocksPointersBaseOffset());
-        ResetMenuAndMonGlobals();
-        Save_ResetSaveCounters();
-        LoadGameSave(SAVE_NORMAL);
-        if (gSaveFileStatus == SAVE_STATUS_EMPTY || gSaveFileStatus == SAVE_STATUS_CORRUPT)
-            Sav2_ClearSetDefault();
-        SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
-        InitHeap(gHeap, HEAP_SIZE);
-    }
+    SetSaveBlocksPointers(GetSaveBlocksPointersBaseOffset());
+    ResetMenuAndMonGlobals();
+    Save_ResetSaveCounters();
+    LoadGameSave(SAVE_NORMAL);
+    if (gSaveFileStatus == SAVE_STATUS_EMPTY || gSaveFileStatus == SAVE_STATUS_CORRUPT)
+        Sav2_ClearSetDefault();
+    SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
+    InitHeap(gHeap, HEAP_SIZE);
+    SetMainCallback2(CB2_InitTitleScreen);
 }
 
 void CB2_InitCopyrightScreenAfterTitleScreen(void)
 {
-    SetUpCopyrightScreen();
+    SetMainCallback2(CB2_InitTitleScreen);
 }
 
 #define sBigDropSpriteId data[0]

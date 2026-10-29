@@ -1091,7 +1091,17 @@ static void Task_HandleMainMenuAPressed(u8 taskId)
 
             gPlttBufferUnfaded[0] = RGB_BLACK;
             gPlttBufferFaded[0] = RGB_BLACK;
-            gTasks[taskId].func = Task_NewGameBirchSpeech_Init;
+            gSaveBlock2Ptr->playerGender = MALE;
+            {
+                static const u8 sDefaultPlayerName[] = _("EMERALD");
+                u8 i;
+                for (i = 0; i < PLAYER_NAME_LENGTH && sDefaultPlayerName[i] != EOS; i++)
+                    gSaveBlock2Ptr->playerName[i] = sDefaultPlayerName[i];
+                gSaveBlock2Ptr->playerName[i] = EOS;
+            }
+            FreeAllWindowBuffers();
+            SetMainCallback2(CB2_NewGame);
+            DestroyTask(taskId);
             break;
         case ACTION_CONTINUE:
             gPlttBufferUnfaded[0] = RGB_BLACK;

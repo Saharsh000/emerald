@@ -1022,9 +1022,239 @@ void CopySecondaryTilesetToVramUsingHeap(struct MapLayout const *mapLayout)
     CopyTilesetToVramUsingHeap(mapLayout->secondaryTileset, NUM_TILES_TOTAL - GetNumTilesInPrimary(mapLayout), GetNumTilesInPrimary(mapLayout));
 }
 
+// ====================================================================
+// Dynamic Grass Color System
+// Recolors the grass/foliage palette (BG palette 2) and the grass
+// field-effect sprite palette per map region at runtime.
+// ====================================================================
+
+struct GrassColors {
+    u16 foliageHighlight;
+    u16 foliageMid;
+    u16 foliageShade;
+    u16 outline;
+    u16 tallHighlight;
+    u16 tallMid;
+    u16 tallShade;
+    u16 tallOutline;
+};
+
+// 0: WARM AMBER  — Starting areas (Littleroot, Oldale, early routes)
+// 1: CRIMSON     — Petalburg region & volcanic areas
+// 2: GOLDEN      — Central Hoenn (Mauville, Rustboro corridor)
+// 3: TEAL / CYAN — Rainy & coastal areas (Fortree, Dewford)
+// 4: VIOLET      — Eastern Hoenn (Lilycove, Mossdeep)
+// 5: PINK        — Special / Safari Zone
+
+static const struct GrassColors sGrassColorThemes[] = {
+    // 0: WARM AMBER — warm autumn tones
+    {
+        .foliageHighlight = RGB(31, 25, 10),
+        .foliageMid       = RGB(28, 17, 4),
+        .foliageShade     = RGB(21, 10, 2),
+        .outline          = RGB(11, 5, 0),
+        .tallHighlight    = RGB(31, 27, 14),
+        .tallMid          = RGB(29, 18, 5),
+        .tallShade        = RGB(22, 11, 2),
+        .tallOutline      = RGB(12, 5, 0),
+    },
+    // 1: CRIMSON — deep red with warm undertones
+    {
+        .foliageHighlight = RGB(31, 16, 12),
+        .foliageMid       = RGB(26, 8, 5),
+        .foliageShade     = RGB(18, 3, 2),
+        .outline          = RGB(10, 1, 0),
+        .tallHighlight    = RGB(31, 19, 15),
+        .tallMid          = RGB(27, 9, 6),
+        .tallShade        = RGB(19, 4, 3),
+        .tallOutline      = RGB(11, 1, 0),
+    },
+    // 2: GOLDEN — rich warm yellow
+    {
+        .foliageHighlight = RGB(31, 30, 12),
+        .foliageMid       = RGB(28, 24, 4),
+        .foliageShade     = RGB(22, 17, 1),
+        .outline          = RGB(12, 8, 0),
+        .tallHighlight    = RGB(31, 31, 16),
+        .tallMid          = RGB(29, 25, 5),
+        .tallShade        = RGB(23, 18, 2),
+        .tallOutline      = RGB(13, 9, 0),
+    },
+    // 3: TEAL / CYAN — cool ocean & rain vibes
+    {
+        .foliageHighlight = RGB(14, 29, 28),
+        .foliageMid       = RGB(6, 21, 24),
+        .foliageShade     = RGB(2, 13, 18),
+        .outline          = RGB(0, 6, 9),
+        .tallHighlight    = RGB(17, 31, 29),
+        .tallMid          = RGB(7, 22, 25),
+        .tallShade        = RGB(3, 14, 19),
+        .tallOutline      = RGB(1, 7, 10),
+    },
+    // 4: VIOLET — mystical purple
+    {
+        .foliageHighlight = RGB(27, 17, 31),
+        .foliageMid       = RGB(20, 9, 27),
+        .foliageShade     = RGB(13, 4, 19),
+        .outline          = RGB(7, 1, 10),
+        .tallHighlight    = RGB(29, 20, 31),
+        .tallMid          = RGB(21, 10, 28),
+        .tallShade        = RGB(14, 5, 20),
+        .tallOutline      = RGB(8, 2, 11),
+    },
+    // 5: SAKURA PINK — special areas
+    {
+        .foliageHighlight = RGB(31, 20, 24),
+        .foliageMid       = RGB(27, 12, 18),
+        .foliageShade     = RGB(20, 5, 12),
+        .outline          = RGB(11, 2, 6),
+        .tallHighlight    = RGB(31, 23, 26),
+        .tallMid          = RGB(28, 13, 19),
+        .tallShade        = RGB(21, 6, 13),
+        .tallOutline      = RGB(12, 2, 7),
+    },
+};
+
+static u8 GetGrassColorTheme(void)
+{
+    switch (gMapHeader.regionMapSectionId)
+    {
+    // CRIMSON — Petalburg region, volcanic areas
+    case MAPSEC_PETALBURG_CITY:
+    case MAPSEC_PETALBURG_WOODS:
+    case MAPSEC_ROUTE_103:
+    case MAPSEC_ROUTE_104:
+    case MAPSEC_ROUTE_114:
+    case MAPSEC_MT_CHIMNEY:
+    case MAPSEC_JAGGED_PASS:
+        return 1;
+
+    // GOLDEN — Central corridor
+    case MAPSEC_RUSTBORO_CITY:
+    case MAPSEC_ROUTE_116:
+    case MAPSEC_VERDANTURF_TOWN:
+    case MAPSEC_ROUTE_117:
+    case MAPSEC_MAUVILLE_CITY:
+    case MAPSEC_ROUTE_110:
+    case MAPSEC_ROUTE_118:
+        return 2;
+
+    // TEAL — Rainy/coastal areas
+    case MAPSEC_FORTREE_CITY:
+    case MAPSEC_ROUTE_119:
+    case MAPSEC_ROUTE_120:
+    case MAPSEC_ROUTE_115:
+    case MAPSEC_DEWFORD_TOWN:
+    case MAPSEC_SOOTOPOLIS_CITY:
+    case MAPSEC_EVER_GRANDE_CITY:
+        return 3;
+
+    // VIOLET — Eastern Hoenn
+    case MAPSEC_SLATEPORT_CITY:
+    case MAPSEC_ROUTE_121:
+    case MAPSEC_ROUTE_122:
+    case MAPSEC_ROUTE_123:
+    case MAPSEC_LILYCOVE_CITY:
+    case MAPSEC_MOSSDEEP_CITY:
+    case MAPSEC_PACIFIDLOG_TOWN:
+        return 4;
+
+    // SAKURA PINK — Safari Zone
+    case MAPSEC_SAFARI_ZONE:
+        return 5;
+
+    // WARM AMBER — Starting area and default
+    case MAPSEC_LITTLEROOT_TOWN:
+    case MAPSEC_ROUTE_101:
+    case MAPSEC_OLDALE_TOWN:
+    case MAPSEC_ROUTE_102:
+    case MAPSEC_ROUTE_111:
+    case MAPSEC_ROUTE_112:
+    case MAPSEC_LAVARIDGE_TOWN:
+    case MAPSEC_FALLARBOR_TOWN:
+    case MAPSEC_ROUTE_113:
+    default:
+        return 0;
+    }
+}
+
+static void ApplyGrassColorToBgPalette(u8 theme)
+{
+    u16 offset = BG_PLTT_ID(2);
+    const struct GrassColors *colors = &sGrassColorThemes[theme];
+
+    // Foliage colors (palette 2, indices 1-4): bushes, tree canopy, ground cover
+    gPlttBufferUnfaded[offset + 1] = colors->foliageHighlight;
+    gPlttBufferFaded[offset + 1]   = colors->foliageHighlight;
+
+    gPlttBufferUnfaded[offset + 2] = colors->foliageMid;
+    gPlttBufferFaded[offset + 2]   = colors->foliageMid;
+
+    gPlttBufferUnfaded[offset + 3] = colors->foliageShade;
+    gPlttBufferFaded[offset + 3]   = colors->foliageShade;
+
+    gPlttBufferUnfaded[offset + 4] = colors->outline;
+    gPlttBufferFaded[offset + 4]   = colors->outline;
+
+    // Tall grass colors (palette 2, indices 12-15): the actual grass blades
+    gPlttBufferUnfaded[offset + 12] = colors->tallHighlight;
+    gPlttBufferFaded[offset + 12]   = colors->tallHighlight;
+
+    gPlttBufferUnfaded[offset + 13] = colors->tallMid;
+    gPlttBufferFaded[offset + 13]   = colors->tallMid;
+
+    gPlttBufferUnfaded[offset + 14] = colors->tallShade;
+    gPlttBufferFaded[offset + 14]   = colors->tallShade;
+
+    gPlttBufferUnfaded[offset + 15] = colors->tallOutline;
+    gPlttBufferFaded[offset + 15]   = colors->tallOutline;
+}
+
+void ApplyLocationGrassColor(struct MapLayout const *mapLayout)
+{
+    if (mapLayout && mapLayout->primaryTileset && !mapLayout->primaryTileset->isSecondary)
+    {
+        u8 theme = GetGrassColorTheme();
+        ApplyGrassColorToBgPalette(theme);
+    }
+}
+
+// Recolors the grass rustle sprite palette (field effect GENERAL_1) to match the current map.
+void ApplyLocationGrassColorToSprites(u8 paletteSlot)
+{
+    u8 theme = GetGrassColorTheme();
+    const struct GrassColors *colors = &sGrassColorThemes[theme];
+    u16 offset = OBJ_PLTT_OFFSET + PLTT_ID(paletteSlot);
+
+    gPlttBufferUnfaded[offset + 1] = colors->foliageHighlight;
+    gPlttBufferFaded[offset + 1]   = colors->foliageHighlight;
+
+    gPlttBufferUnfaded[offset + 2] = colors->foliageMid;
+    gPlttBufferFaded[offset + 2]   = colors->foliageMid;
+
+    gPlttBufferUnfaded[offset + 3] = colors->foliageShade;
+    gPlttBufferFaded[offset + 3]   = colors->foliageShade;
+
+    gPlttBufferUnfaded[offset + 4] = colors->outline;
+    gPlttBufferFaded[offset + 4]   = colors->outline;
+
+    gPlttBufferUnfaded[offset + 12] = colors->tallHighlight;
+    gPlttBufferFaded[offset + 12]   = colors->tallHighlight;
+
+    gPlttBufferUnfaded[offset + 13] = colors->tallMid;
+    gPlttBufferFaded[offset + 13]   = colors->tallMid;
+
+    gPlttBufferUnfaded[offset + 14] = colors->tallShade;
+    gPlttBufferFaded[offset + 14]   = colors->tallShade;
+
+    gPlttBufferUnfaded[offset + 15] = colors->tallOutline;
+    gPlttBufferFaded[offset + 15]   = colors->tallOutline;
+}
+
 static void LoadPrimaryTilesetPalette(struct MapLayout const *mapLayout)
 {
     LoadTilesetPalette(mapLayout->primaryTileset, 0, GetNumPalsInPrimary(mapLayout) * PLTT_SIZE_4BPP, FALSE, GetNumPalsInPrimary(mapLayout));
+    ApplyLocationGrassColor(mapLayout);
 }
 
 void LoadSecondaryTilesetPalette(struct MapLayout const *mapLayout, bool8 skipFaded)
